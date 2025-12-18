@@ -48,7 +48,7 @@ const handleLogin = async () => {
         </Button>
         <p class="text-center text-sm text-muted-foreground">
           Don't have an account?
-          <NuxtLink to="/signup" class="underline text-primary hover:text-primary/80">Sign up</NuxtLink>
+          <NuxtLink to="/auth/signup" class="underline text-primary hover:text-primary/80">Sign up</NuxtLink>
         </p>
       </CardFooter>
     </Card>

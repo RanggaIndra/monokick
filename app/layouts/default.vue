@@ -59,7 +59,7 @@ const handleLogout = async () => {
           </div>
 
           <div v-else>
-            <NuxtLink to="/login">
+            <NuxtLink to="/auth/login">
               <Button variant="default" size="sm">Login</Button>
             </NuxtLink>
           </div>

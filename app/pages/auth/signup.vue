@@ -61,7 +61,7 @@ const handleRegister = async () => {
         </Button>
         <p class="text-center text-sm text-muted-foreground">
           Already have an account?
-          <NuxtLink to="/login" class="underline text-primary hover:text-primary/80">Login</NuxtLink>
+          <NuxtLink to="/auth/login" class="underline text-primary hover:text-primary/80">Login</NuxtLink>
         </p>
       </CardFooter>
     </Card>
