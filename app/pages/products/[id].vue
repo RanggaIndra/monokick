@@ -1,6 +1,6 @@
 <script setup>
-import { useRoute } from "vue-router";
-import { useFirestore, useDocument, useCollection } from "vuefire";
+import { routerKey, useRoute } from "vue-router";
+import { useFirestore, useDocument, useCollection, useCurrentUser } from "vuefire";
 import { doc, collection, query, where, limit } from "firebase/firestore";
 import { useCartStore } from "@/stores/cart";
 import { Loader2 } from "lucide-vue-next";
@@ -11,11 +11,15 @@ import ProductInfo from "@/components/products/ProductInfo.vue";
 import ProductActions from "@/components/products/ProductActions.vue";
 import ProductReviews from "@/components/products/ProductReviews.vue";
 import ProductCard from "@/components/products/ProductCard.vue";
+import SuccessModal from "~/components/common/SuccessModal.vue";
 
 const route = useRoute();
 const db = useFirestore();
+const user = useCurrentUser();
 const cartStore = useCartStore();
 const productId = route.params.id;
+
+const showSuccessModal = ref(false);
 
 const productRef = doc(db, "products", productId);
 const product = useDocument(productRef);
@@ -24,14 +28,29 @@ const relatedQuery = query(collection(db, "products"), limit(4));
 const relatedProducts = useCollection(relatedQuery);
 
 const onAddToCart = async (size) => {
-  await cartStore.addToCart(product.value, size);
+  if (!user.value) {
+    router.push("/auth/login");
+    return;
+  }
+
+  const success = await cartStore.addToCart(product.value, size);
+  if (success) {
+    showSuccessModal.value = true;
+  }
 };
 
 const onBuyNow = async (size) => {
-  await cartStore.addToCart(product.value, size);
-  // Redirect to checkout
-  // navigateTo('/checkout')
-  alert("Redirecting to checkout...");
+  if (!user.value) {
+    router.push("/auth/login");
+    return;
+  }
+
+  const success = await cartStore.addToCart(product.value, size);
+  if (success) {
+    setTimeout(() => {
+      router.push("/checkout");
+    }, 100);
+  }
 };
 
 const onToggleFavorite = () => {
@@ -64,17 +83,19 @@ const onToggleFavorite = () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div class="lg:col-span-2">
-          <ProductReviews :productId="productId" />
+        <div class="lg:col-span-2 space-y-6 order-2 lg:order-1">
+          <h3 class="text-xl font-bold">You might also like</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <ProductCard v-for="item in relatedProducts" :key="item.id" :product="item" class="text-sm" />
+          </div>
         </div>
 
-        <div class="space-y-6">
-          <h3 class="text-xl font-bold">You might also like</h3>
-          <div class="grid grid-cols-1 gap-6">
-            <ProductCard v-for="item in relatedProducts" :key="item.id" :product="item" />
-          </div>
+        <div class="lg:col-span-1 order-1 lg:order-2">
+          <ProductReviews :productId="productId" />
         </div>
       </div>
     </div>
+
+    <SuccessModal :is-open="showSuccessModal" title="Added to Cart!" description="The item has been successfully added to your shopping bag." button-text="Continue Shopping" @close="showSuccessModal = false" />
   </div>
 </template>

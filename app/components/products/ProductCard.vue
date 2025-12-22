@@ -26,21 +26,21 @@ const formatIDR = (value: number) => {
 </script>
 
 <template>
-  <Card class="group relative border-0 shadow-none bg-transparent">
-    <div class="aspect-square relative overflow-hidden rounded-xl bg-secondary/50 mb-4">
-      <Badge v-if="product.isNew" variant="default" class="absolute top-3 left-3 z-10"> NEW </Badge>
+  <NuxtLink :to="`/products/${product.id}`">
+    <Card class="group relative border-0 shadow-none bg-transparent cursor-pointer h-full">
+      <div class="aspect-square relative overflow-hidden rounded-xl bg-secondary/50 mb-4 border border-border">
+        <Badge v-if="product.isNew" variant="default" class="absolute top-3 left-3 z-10"> NEW </Badge>
 
-      <img :src="product.imageUrl" :alt="product.name" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105" />
-
-      <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-        <Button class="w-full shadow-lg bg-background text-foreground hover:bg-background/90"> View Details </Button>
+        <img :src="product.imageUrl" :alt="product.name" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105" />
       </div>
-    </div>
 
-    <div class="space-y-1">
-      <p class="text-sm text-muted-foreground">{{ product.brand }}</p>
-      <h3 class="font-bold text-lg leading-none truncate text-foreground">{{ product.name }}</h3>
-      <p class="font-medium mt-2 text-primary">{{ formatIDR(product.price) }}</p>
-    </div>
-  </Card>
+      <div class="space-y-1">
+        <p class="text-sm text-muted-foreground">{{ product.brand }}</p>
+        <h3 class="font-bold text-lg leading-none truncate text-foreground group-hover:text-primary transition-colors">
+          {{ product.name }}
+        </h3>
+        <p class="font-medium mt-2 text-primary">{{ formatIDR(product.price) }}</p>
+      </div>
+    </Card>
+  </NuxtLink>
 </template>

@@ -2,8 +2,7 @@
 import { useCurrentUser } from "vuefire";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-
-// Shadcn Components
+import { ShoppingCart } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -42,6 +41,14 @@ const handleLogout = async () => {
             <span v-if="colorMode.value === 'dark'">☀️</span>
             <span v-else>🌑</span>
           </Button>
+
+          <div v-if="user">
+            <NuxtLink to="/cart">
+              <Button variant="ghost" size="icon" class="relative">
+                <ShoppingCart class="h-5 w-5" />
+              </Button>
+            </NuxtLink>
+          </div>
 
           <div v-if="user">
             <DropdownMenu>

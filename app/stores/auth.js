@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
                 })
             }
 
-            await setDoc(doc(db, "users", uuser.uid), {
+            await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
                 email: email,
                 displayName: name,

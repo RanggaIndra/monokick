@@ -1,7 +1,9 @@
 <script setup>
-import { useFirestore, useCollection } from "vuefire";
-import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { computed } from "vue";
+import { useFirestore, useCollection, useCurrentUser } from "vuefire";
+import { collection, query, where, addDoc, serverTimestamp } from "firebase/firestore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 const props = defineProps({
   productId: {
@@ -11,13 +13,33 @@ const props = defineProps({
 });
 
 const db = useFirestore();
-const reviewsQuery = query(collection(db, "ratings"), where("productId", "==", props.productId), orderBy("createdAt", "desc"), limit(5));
+const user = useCurrentUser();
+
+const reviewsQuery = computed(() => {
+  collection(db, "ratings"), where("productId", "==", props.productId);
+});
+
 const reviews = useCollection(reviewsQuery);
+
+const addTestReview = async () => {
+  await addDoc(collection(db, "ratings"), {
+    productId: props.productId,
+    userName: user.value?.displayName || "Anonymous User",
+    rating: 5,
+    comment: "This is a test review for this specific product ID!",
+    createdAt: serverTimestamp(),
+  });
+  alert("Review added! It should appear now.");
+};
 </script>
 
 <template>
   <div class="space-y-6 pt-10">
-    <h3 class="text-xl font-bold">Reviews ({{ reviews.length }})</h3>
+    <div class="flex items-center justify-between">
+      <h3 class="text-xl font-bold">Reviews ({{ reviews?.length || 0 }})</h3>
+
+      <Button v-if="user" variant="outline" size="sm" @click="addTestReview"> + Add Test Review </Button>
+    </div>
 
     <div class="grid gap-6">
       <div v-for="review in reviews" :key="review.id" class="flex gap-4 p-4 rounded-lg bg-secondary/20">
@@ -38,7 +60,7 @@ const reviews = useCollection(reviewsQuery);
         </div>
       </div>
 
-      <div v-if="reviews.length === 0" class="text-center py-8 text-muted-foreground">No reviews yet. Be the first to review!</div>
+      <div v-if="!reviews?.length" class="text-center py-8 text-muted-foreground bg-muted/20 rounded-xl">No reviews yet. Click the button above to add one!</div>
     </div>
   </div>
 </template>
