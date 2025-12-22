@@ -19,7 +19,7 @@ const toggleTheme = () => {
 
 const handleLogout = async () => {
   await authStore.logout();
-  router.push("/login");
+  router.push("/auth/login");
 };
 </script>
 

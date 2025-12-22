@@ -1,3 +1,8 @@
+<script setup>
+import { Button } from "@/components/ui/button";
+import DatabaseSeeder from "~/components/ui/DatabaseSeeder.vue";
+</script>
+
 <template>
   <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
     <h1 class="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">Walk with Confidence.</h1>
@@ -7,7 +12,3 @@
     </NuxtLink>
   </div>
 </template>
-
-<script setup>
-import { Button } from "@/components/ui/button";
-</script>
